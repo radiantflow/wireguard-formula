@@ -1,0 +1,17 @@
+wireguard:
+  limit_memlock: '{{ (1024 * 4096 * 16) }}' # 1024 * RSA keysize * 16
+  networks: {}
+
+  defaults:
+    network:
+      connect_to: []
+      remote_subnets: []
+      config:
+        Port: 655
+      scripts: {}
+      nodes: {}
+    node:
+      ip: ""
+      subnets: []
+      config: {}
+      scripts: {}

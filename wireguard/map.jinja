@@ -1,0 +1,35 @@
+{% import_yaml slspath+"/defaults.yaml" as defaults %}
+
+{% set wireguard_pillar = salt['pillar.get']('wireguard', default=defaults.wireguard, merge=True) %}
+
+{# Get Mine Data #}
+{% set wireguard_external_ips = salt['mine.get']('features:wireguard', 'external_ip', expr_form = 'grain') %}
+
+{# Add Network Defaults #}
+{% for network, network_settings in wireguard_pillar['networks'].items() %}
+  {% set merged_network=salt['pillar.get']('wireguard:networks:' ~ network, wireguard_pillar.defaults.network, merge=True) %}
+  {% do wireguard_pillar['networks'][network].update(merged_network) %}
+  {% if network_settings['nodes'] %}
+    {% for node, node_setting in network_settings['nodes'].items() %}
+      {% set merged_node = salt['pillar.get']('wireguard:networks:' ~ network ~ ':nodes:' ~ node, wireguard_pillar.defaults.node, merge=True) %}
+      {% if node in wireguard_external_ips and merged_node.get("ip", "") == "" %}
+        {% do merged_node.update({'ip': wireguard_external_ips[node]}) %}
+      {% endif %}
+      {% do wireguard_pillar['networks'][network]['nodes'][node].update(merged_node) %}
+      {% if grains['id'] != node %}
+        {% if not node in wireguard_pillar['networks'][network]['connect_to'] %}
+          {% do wireguard_pillar['networks'][network]['connect_to'].append(node) %}
+        {% endif %}
+        {% for subnet in merged_node.subnets %}
+          {% if not subnet in wireguard_pillar['networks'][network]['remote_subnets'] %}
+            {% do wireguard_pillar['networks'][network]['remote_subnets'].append(subnet) %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+
+{# Create import pillar #}
+{% set wireguard = wireguard_pillar %}
+
