@@ -1,0 +1,52 @@
+[Interface]
+{%- if config.get('addresses', []) -%}
+{%- for address in config.get('addresses', []) | unique %}
+Address = {{ address }}
+{%- endfor -%}
+{%- endif %}
+{%- if  config.get('listen_port') %}
+ListenPort = {{ config.listen_port }}
+{%- endif %}
+PrivateKey = {{ config.get('private_key') }}
+{%- if config.get('dns', []) %}
+DNS = {{ config.dns|join(", ") }}
+{%- endif %}
+{%- if config.get('mtu') %}
+MTU = {{ config.mtu }}
+{%- endif %}
+{%- if config.get('table') %}
+Table = {{ config.table }}
+{%- endif %}
+{%- if config.get('post_up') %}
+PostUp = {{ config.post_up }}
+{%- endif %}
+{%- if config.get('post_down') %}
+PostDown = {{ config.post_down }}
+{%- endif %}
+{%- if config.get('fw_mark') %}
+FwMark = {{ config.fw_mark }}
+{%- endif %}
+{%- if config.get('save_config') %}
+SaveConfig = {{ config.save_config }}
+{%- endif %}
+
+
+{% for key, peer in peers.items()  -%}
+[Peer]
+# Peer: {{ peer.name }}
+{%- if peer.get('comment') %}
+# {{ peer.comment }}
+{%- endif %}
+PublicKey = {{ peer.public_key }}
+{%- if peer.get('preshared_key') %}
+PresharedKey = {{ peer.preshared_key }}
+{%- endif %}
+AllowedIPs = {{ peer.allowed_ips|unique|join(", ") }}
+{%- if peer.get('endpoint') %}
+Endpoint = {{ peer.endpoint }}
+{%- endif %}
+{%- if peer.get('persistent_keepalive') %}
+PersistentKeepalive = {{ peer.persistent_keepalive }}
+{%- endif %}
+
+{% endfor %}

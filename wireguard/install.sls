@@ -1,5 +1,14 @@
 {% from slspath+"/map.jinja" import wireguard with context %}
 
+{%- if grains.get('kernelrelease') != None %}
+
+linux_kernel_headers:
+  pkg.installed:
+  - name: linux-headers-{{ grains.get('kernelrelease') }}
+  - refresh: true
+
+{%- endif %}
+
 wireguard_package:
   pkg.installed:
     - name: wireguard

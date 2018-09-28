@@ -1,17 +1,28 @@
 wireguard:
-  limit_memlock: '{{ (1024 * 4096 * 16) }}' # 1024 * RSA keysize * 16
   networks: {}
 
   defaults:
     network:
-      connect_to: []
-      remote_subnets: []
-      config:
-        Port: 655
-      scripts: {}
+      enabled: false
       nodes: {}
-    node:
-      ip: ""
-      subnets: []
-      config: {}
-      scripts: {}
+      peers: {}
+      node:
+        address:
+        addresses: []
+        ip:
+        listen_port: 51820
+        private_key:
+        dns: []
+        mtu:
+        table:
+        post_up:
+        post_down:
+        fw_mark:
+        save_config:
+        preshared_key:
+        persistent_keepalive:
+        comment:
+        public_key:
+        allowed_ips: []
+        endpoint:
+        endpoint_addr:

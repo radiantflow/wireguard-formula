@@ -1,4 +1,4 @@
 include:
   - {{ slspath }}.install
-  #- {{ slspath }}.config
+  - {{ slspath }}.config
   #- {{ slspath }}.service
