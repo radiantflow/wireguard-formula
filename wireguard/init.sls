@@ -1,4 +1,5 @@
 include:
   - {{ slspath }}.install
   - {{ slspath }}.config
-  #- {{ slspath }}.service
+  - {{ slspath }}.service
+#  - {{ slspath }}.hostsfile

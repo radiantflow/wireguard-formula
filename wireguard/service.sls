@@ -2,9 +2,13 @@
 
 {% for network, network_settings in wireguard.networks.items() %}
 wireguard-service-{{ network }}:
+  {%- if network_settings.active %}
   service.running:
-    - name: wg@{{ network }}
-    - enable: {{ network_settings.enabled }}
+  {%- else %}
+  service.dead:
+  {%- endif %}
+    - name: wg-quick@{{ network }}
+    - enable: true
     - watch:
       - file: /etc/wireguard/{{ network }}.conf
 {% endfor %}

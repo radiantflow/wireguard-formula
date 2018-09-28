@@ -2,8 +2,12 @@ wireguard:
   networks: {}
 
   defaults:
+    installed: true
+    hostsfile: false
+
     network:
-      enabled: false
+      active: true
+
       nodes: {}
       peers: {}
       node:
