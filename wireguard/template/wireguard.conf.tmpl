@@ -1,8 +1,9 @@
 [Interface]
-{%- if config.get('addresses', []) -%}
-{%- for address in config.get('addresses', []) | unique %}
-Address = {{ address }}
-{%- endfor -%}
+{%- if config.get('ipv4_address') != None %}
+Address = {{ config.get('ipv4_address') }}
+{%- endif %}
+{%- if config.get('ipv6_address') != None %}
+Address = {{ config.get('ipv6_address') }}
 {%- endif %}
 {%- if  config.get('listen_port') %}
 ListenPort = {{ config.listen_port }}

@@ -12,7 +12,6 @@
   {% if network_settings['nodes'] %}
     {% for node, node_setting in network_settings['nodes'].items() %}
       {% set merged_node = salt['pillar.get']('wireguard:networks:' ~ network ~ ':nodes:' ~ node, merged_network.node, merge=True) %}
-      {% do merged_node.get('addresses', []).append(merged_node.get('address')) %}
       {% do wireguard_pillar['networks'][network]['nodes'][node].update(merged_node) %}
       {% if grains['id'] != node and merged_node.get('public_key') != None %}
           {% set endpoint = merged_node.get('endpoint') %}
@@ -21,9 +20,12 @@
           {% endif %}
           {% set allowed_ips = merged_node.get('allowed_ips', []) %}
           {% if allowed_ips | length == 0 %}
-            {% for address in merged_node.get('addresses', []) %}
-                {% do allowed_ips.append(address) %}
-            {% endfor %}
+            {% if merged_node.get('ipv4_address') != None %}
+                {% do allowed_ips.append(merged_node.get('ipv4_address')) %}
+            {% endif %}
+            {% if merged_node.get('ipv6_address') != None %}
+                {% do allowed_ips.append(merged_node.get('ipv6_address')) %}
+            {% endif %}
           {% endif %}
           {% set merged_peer = {
             'name': node,

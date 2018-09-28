@@ -1,9 +1,9 @@
 {% from slspath+"/map.jinja" import wireguard, wireguard_external_ips with context %}
-{%- set current_host = grains['id'].split('.') | first %}
+{%- set current_id = grains['id'].split('.') | first %}
 
 {% for netname, network in wireguard.get('networks', {}).items() %}
-
-{#  {% if network.config.get('private_key') != None %}#}
+  {% set current_host = network['nodes'].get(current_id, {}) %}
+  {% if current_host.get('private_key') != None and (current_host.get("ipv4_address") != None or current_host.get("ipv6_address") != None) %}
 wireguard-config-{{netname}}:
   file.managed:
     - name: /etc/wireguard/{{ netname }}.conf
@@ -14,12 +14,12 @@ wireguard-config-{{netname}}:
     - source: salt://wireguard/template/wireguard.conf.tmpl
     - template: 'jinja'
     - context:
-        hostname: {{ current_host|json }}
-        config: {{ network['nodes'].get(current_host, {})|json }}
+        hostname: {{ current_id|json }}
+        config: {{ current_host|json }}
         peers: {{ network.get('peers', {})|json }}
 
-    #- watch_in:
-    #  - service: wireguard-service-{{ netname }}
+    - watch_in:
+      - service: wireguard-service-{{ netname }}
 
-{#  {% endif %}#}
+  {% endif %}
 {% endfor %}

@@ -3,17 +3,16 @@ wireguard:
 
   defaults:
     installed: true
-    hostsfile: false
 
     network:
       active: true
+      hostsfile: false
 
       nodes: {}
       peers: {}
       node:
-        address:
-        addresses: []
-        ip:
+        ipv4_address:
+        ipv6_address:
         listen_port: 51820
         private_key:
         dns: []
