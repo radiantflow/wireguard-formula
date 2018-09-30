@@ -10,6 +10,8 @@ wireguard:
 
       nodes: {}
       peers: {}
+      deleted_hosts: []
+
       node:
         ipv4_address:
         ipv6_address:
