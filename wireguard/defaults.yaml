@@ -1,9 +1,8 @@
 wireguard:
+  installed: true
   networks: {}
 
   defaults:
-    installed: true
-
     network:
       active: true
       hostsfile: false
